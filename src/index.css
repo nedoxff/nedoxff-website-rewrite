@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --color-dark: 05 05 05;
+    }
+}
+
+@layer utilities {
+    .font-wide {
+        font-variation-settings: 'wdth' 150;
+    }
+}
