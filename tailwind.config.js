@@ -1,22 +1,19 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'selector',
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  darkMode: "selector",
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
-        dark: 'rgb(var(--color-dark) / <alpha-value>)',
+        dark: "rgb(var(--color-dark) / <alpha-value>)",
       },
       fontFamily: {
-        body: ['InterVariable', ...defaultTheme.fontFamily.sans],
-        title: ['Anybody', ...defaultTheme.fontFamily.sans]
-      }
+        body: ["ClashGrotesk-Variable", ...defaultTheme.fontFamily.sans],
+        title: ["ClashDisplay-Variable", ...defaultTheme.fontFamily.sans],
+      },
     },
   },
   plugins: [],
-}
+};

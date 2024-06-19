@@ -3,20 +3,40 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --color-dark: 05 05 05;
-    }
+  :root {
+    --color-dark: 05 05 05;
+  }
 
-    .filter-white {
-        filter: invert(99%) sepia(0%) saturate(1821%) hue-rotate(331deg) brightness(109%) contrast(100%);
-    }
+  .filter-white {
+    filter: invert(99%) sepia(0%) saturate(1821%) hue-rotate(331deg)
+      brightness(109%) contrast(100%);
+  }
+
+  @font-face {
+    font-family: "ClashDisplay-Variable";
+    src: url("/fonts/ClashDisplay-Variable.woff2") format("woff2");
+    font-weight: 200 700;
+    font-display: swap;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "ClashGrotesk-Variable";
+    src:
+      url("../fonts/ClashGrotesk-Variable.woff2") format("woff2"),
+      url("../fonts/ClashGrotesk-Variable.woff") format("woff"),
+      url("../fonts/ClashGrotesk-Variable.ttf") format("truetype");
+    font-weight: 200 700;
+    font-display: swap;
+    font-style: normal;
+  }
 }
 
 @layer utilities {
-    .font-very-wide {
-        font-variation-settings: 'wdth' 150;
-    }
-    .font-wide {
-        font-variation-settings: 'wdth' 125;
-    }
+  .font-very-wide {
+    font-variation-settings: "wdth" 150;
+  }
+  .font-wide {
+    font-variation-settings: "wdth" 125;
+  }
 }
