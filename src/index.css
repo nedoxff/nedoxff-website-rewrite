@@ -6,10 +6,17 @@
     :root {
         --color-dark: 05 05 05;
     }
+
+    .filter-white {
+        filter: invert(99%) sepia(0%) saturate(1821%) hue-rotate(331deg) brightness(109%) contrast(100%);
+    }
 }
 
 @layer utilities {
-    .font-wide {
+    .font-very-wide {
         font-variation-settings: 'wdth' 150;
+    }
+    .font-wide {
+        font-variation-settings: 'wdth' 125;
     }
 }

@@ -35,8 +35,8 @@ export default function LoadingScreen(props: LoadingScreenProps) {
     }, [loadingBarProgress]);
 
     return <div style={{backgroundColor: props.backgroundColor}} className="fixed top-0 left-0 w-dvw h-dvh">
-        {errorMessage !== "" && <h1 style={{color: props.elementColor}} className="font-title font-medium text-2xl p-5">An error occurred while loading:<br/><span className="font-body font-normal">{errorMessage}</span></h1>}
-        <h1 ref={loadingBarRef} style={{backgroundColor: props.elementColor, transformOrigin: "center left"}} className="font-title p-1 scale-x-0 text-2xl xl:text-4xl fixed bottom-0 left-0 w-dvw text-transparent">Loading</h1>
-        <h1 style={{color: props.backgroundColor}} className="mix-blend-lighten font-title text-2xl xl:text-4xl fixed bottom-0 left-0 font-wide">Loading</h1>
+        {errorMessage !== "" && <h1 style={{color: props.elementColor}} className="font-title font-medium text-2xl p-5">an error occurred while loading:<br/><span className="font-body font-normal">{errorMessage}</span></h1>}
+        <h1 ref={loadingBarRef} style={{backgroundColor: props.elementColor, transformOrigin: "center left"}} className="font-title font-very-wide p-1 scale-x-0 text-2xl xl:text-4xl fixed bottom-0 left-0 w-dvw text-transparent">loading</h1>
+        <h1 style={{color: props.backgroundColor}} className="mix-blend-lighten font-title text-2xl xl:text-4xl fixed bottom-0 left-0 font-very-wide">loading</h1>
     </div>
 }
