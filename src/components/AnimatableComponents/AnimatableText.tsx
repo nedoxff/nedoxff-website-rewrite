@@ -2,6 +2,7 @@ import { ReactNode, useEffect } from "react";
 import gsap from "gsap";
 import { useAnimatable } from "../../helpers/common/CustomHooks";
 import { useGSAP } from "@gsap/react";
+import SplitTextRenderer from "../SplitTextRenderer";
 
 export type AnimatableTextProps = {
   show: boolean;
@@ -14,7 +15,29 @@ export type AnimatableTextProps = {
   safePadding?: number;
 };
 
-export default function AnimatableText(props: AnimatableTextProps) {
+export function AnimatableSplitText(
+  props: AnimatableTextProps & { stagger?: number },
+) {
+  return (
+    <SplitTextRenderer
+      children={props.children}
+      className={props.className}
+      containerClassName="flex flex-col"
+      options={{ split: "lines" }}
+      render={(el, idx) => (
+        <AnimatableText
+          showDelay={(props.stagger ?? 0) * idx}
+          hideDelay={(props.stagger ?? 0) * idx}
+          {...props}
+        >
+          {el.innerText}
+        </AnimatableText>
+      )}
+    />
+  );
+}
+
+export function AnimatableText(props: AnimatableTextProps) {
   const paragraphRef = useAnimatable<HTMLParagraphElement, boolean>(
     props.show,
     (prev, curr, ref) => {

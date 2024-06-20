@@ -3,7 +3,10 @@ import { ProgressPromise } from "../helpers/ProgressPromise";
 import { animateClipTransition } from "../helpers/common/Transitions";
 import { useAnimatable } from "../helpers/common/CustomHooks";
 import toast, { Toaster } from "react-hot-toast";
-import AnimatableText from "../components/AnimatableComponents/AnimatableText";
+import {
+  AnimatableSplitText,
+  AnimatableText,
+} from "../components/AnimatableComponents/AnimatableText";
 import gsap from "gsap";
 import LoadingScreen from "../components/LoadingScreen";
 import {
@@ -18,6 +21,8 @@ import Button from "../components/Buttons/Button";
 
 import Dog from "../assets/dog.png?format=avif&imagetools";
 import Guy from "../assets/guy.png?format=avif&imagetools";
+import Code from "../assets/code.png?format=avif&imagetools";
+import Art from "../assets/art.png?format=avif&imagetools";
 import PawIcon from "../assets/icons/paw.svg";
 import HumanIcon from "../assets/icons/human.svg";
 import DiscordIcon from "../assets/socials/discord.svg";
@@ -36,7 +41,7 @@ export default function Home() {
   const load = () =>
     new ProgressPromise<void>((resolve, reject, progress) => {
       const max = 75;
-      const preload = [Dog, Guy];
+      const preload = [Dog, Guy, Code, Art];
       const perform = (idx: number) =>
         preloadImage(preload[idx])
           .then(() => {
@@ -134,10 +139,10 @@ function HomeGrid(props: { redirect: RedirectCallback }) {
     ref: RefObject<HTMLDivElement>,
   ) => {
     if (!prev && curr) {
-      animateClipTransition<HTMLDivElement>({ axis: "y", duration: 0.75 }, ref);
+      animateClipTransition<HTMLDivElement>({ axis: "y", duration: 1 }, ref);
     } else if (prev && !curr) {
       animateClipTransition<HTMLDivElement>(
-        { axis: "y", backwards: true, duration: 0.75 },
+        { axis: "y", backwards: true, duration: 1 },
         ref,
       );
     }
@@ -226,6 +231,8 @@ function IntroductionSection() {
       </AnimatableText>
       <AnimatableText
         show={show}
+        showDelay={0.1}
+        hideDelay={0.1}
         duration={1}
         safePadding={5}
         className="font-body text-4xl text-white"
@@ -233,7 +240,7 @@ function IntroductionSection() {
         is a <span className="font-semibold">{isFurry ? "dog" : "guy"}</span>{" "}
         that likes creating things on the internet.
       </AnimatableText>
-      <div className="absolute bottom-0 left-0 p-5 flex flex-col gap-2">
+      <div className="absolute max-w-[60%] bottom-0 left-0 p-5 flex flex-col gap-2">
         <div className="hidden flex-row gap-1" ref={buttonContainerRef}>
           <ThemeSwitcher />
           <IconButton
@@ -241,17 +248,18 @@ function IntroductionSection() {
             onClicked={() => setIsFurry(!isFurry)}
           />
         </div>
-        <AnimatableText
+        <AnimatableSplitText
           show={show}
           duration={1}
           safePadding={5}
-          className="font-body text-xl text-white max-w-[60%]"
+          stagger={0.1}
+          className="font-body text-xl text-white"
         >
           this website uses Clash Grotesk and Clash Display fonts, which are
           licensed under the ITF FFL.
           <br />
           the code for this website is open-source and can be found on github.
-        </AnimatableText>
+        </AnimatableSplitText>
       </div>
 
       <img
@@ -310,6 +318,8 @@ function ContactsSection(props: { redirect: RedirectCallback }) {
       </AnimatableText>
       <AnimatableText
         show={show}
+        showDelay={0.1}
+        hideDelay={0.1}
         duration={1}
         safePadding={5}
         className="font-body text-4xl text-white"
@@ -358,6 +368,19 @@ function ContactsSection(props: { redirect: RedirectCallback }) {
 function ArtSection(props: { redirect: RedirectCallback }) {
   const show = useContext(ShowContext);
 
+  const backgroundImageRef = useAnimatable<HTMLImageElement, boolean>(
+    show,
+    (prev, curr, ref) => {
+      if (!prev && curr) {
+        animateClipTransition({ axis: "y", duration: 1 }, ref);
+      } else if (prev && !curr) {
+        animateClipTransition<HTMLDivElement>(
+          { axis: "y", backwards: true, duration: 1 },
+          ref,
+        );
+      }
+    },
+  );
   const redirectButtonRef = useAnimatable<HTMLDivElement, boolean>(
     show,
     (prev, curr, ref) => {
@@ -374,6 +397,12 @@ function ArtSection(props: { redirect: RedirectCallback }) {
 
   return (
     <div className="rounded-xl flex flex-col p-5 border-white row-span-2 col-start-2 relative">
+      <img
+        src={Art}
+        ref={backgroundImageRef}
+        className="hidden absolute top-0 left-0 w-full h-full object-cover object-right-bottom opacity-20"
+      ></img>
+
       <AnimatableText
         show={show}
         duration={1}
@@ -382,6 +411,16 @@ function ArtSection(props: { redirect: RedirectCallback }) {
       >
         art
       </AnimatableText>
+      <AnimatableSplitText
+        show={show}
+        duration={1}
+        safePadding={5}
+        stagger={0.1}
+        className="font-body text-4xl text-white"
+      >
+        i draw silly things, design posters, and occasionally write stuff.
+        amateur typography enthusiast and pretty UI enjoyer.
+      </AnimatableSplitText>
       <div
         className="hidden absolute right-0 bottom-0 mr-5 mb-5"
         ref={redirectButtonRef}
@@ -400,6 +439,19 @@ function ArtSection(props: { redirect: RedirectCallback }) {
 function CodeSection(props: { redirect: RedirectCallback }) {
   const show = useContext(ShowContext);
 
+  const backgroundImageRef = useAnimatable<HTMLImageElement, boolean>(
+    show,
+    (prev, curr, ref) => {
+      if (!prev && curr) {
+        animateClipTransition({ axis: "y", duration: 1 }, ref);
+      } else if (prev && !curr) {
+        animateClipTransition<HTMLDivElement>(
+          { axis: "y", backwards: true, duration: 1 },
+          ref,
+        );
+      }
+    },
+  );
   const redirectButtonRef = useAnimatable<HTMLDivElement, boolean>(
     show,
     (prev, curr, ref) => {
@@ -415,7 +467,13 @@ function CodeSection(props: { redirect: RedirectCallback }) {
   );
 
   return (
-    <div className="rounded-xl row-span-2 col-start-2 flex flex-col p-5 relative">
+    <div className="rounded-xl overflow-clip row-span-2 col-start-2 flex flex-col p-5 relative">
+      <img
+        src={Code}
+        ref={backgroundImageRef}
+        className="hidden absolute top-0 left-0 w-full h-full object-cover object-left-top opacity-20"
+      ></img>
+
       <AnimatableText
         show={show}
         duration={1}
@@ -424,6 +482,16 @@ function CodeSection(props: { redirect: RedirectCallback }) {
       >
         code
       </AnimatableText>
+      <AnimatableSplitText
+        show={show}
+        duration={1}
+        safePadding={5}
+        stagger={0.1}
+        className="font-body text-4xl text-white"
+      >
+        writing code is my main expertise. i have both professional and personal
+        projects, most of which are open-source.
+      </AnimatableSplitText>
       <div
         className="hidden absolute right-0 bottom-0 mr-5 mb-5"
         ref={redirectButtonRef}
