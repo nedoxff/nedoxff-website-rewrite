@@ -1,6 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import gsap from "gsap";
 import { useAnimatable } from "../../helpers/common/CustomHooks";
+import { useGSAP } from "@gsap/react";
 
 export type AnimatableTextProps = {
   show: boolean;
@@ -17,31 +18,42 @@ export default function AnimatableText(props: AnimatableTextProps) {
   const paragraphRef = useAnimatable<HTMLParagraphElement, boolean>(
     props.show,
     (prev, curr, ref) => {
-      if (prev === undefined)
-        gsap.set(ref.current, { yPercent: 100 + (props.safePadding ?? 0) });
-
-      if (prev == false && curr === true) {
-        gsap.to(ref.current, {
-          yPercent: 0,
-          duration: props.duration ?? 1,
-          ease: props.ease ?? "power3.inOut",
-          delay: props.showDelay ?? 0,
-        });
-      } else if (prev === true && curr === false) {
-        gsap.to(ref.current, {
-          yPercent: -100 - (props.safePadding ?? 0),
-          duration: props.duration ?? 1,
-          ease: props.ease ?? "power3.inOut",
-          delay: props.hideDelay ?? 0,
-          onComplete: () => {
-            gsap.set(ref.current, {
-              yPercent: 100 + (props.safePadding ?? 0),
-            });
+      if (!prev && curr) {
+        gsap.fromTo(
+          ref.current,
+          {
+            yPercent: 100 + (props.safePadding ?? 0),
           },
-        });
+          {
+            yPercent: 0,
+            duration: props.duration ?? 1,
+            ease: props.ease ?? "power3.inOut",
+            delay: props.showDelay ?? 0,
+          },
+        );
+      } else if (prev && !curr) {
+        gsap.fromTo(
+          ref.current,
+          {
+            yPercent: 0,
+          },
+          {
+            yPercent: -100 - (props.safePadding ?? 0),
+            duration: props.duration ?? 1,
+            ease: props.ease ?? "power3.inOut",
+            delay: props.hideDelay ?? 0,
+          },
+        );
       }
     },
   );
+
+  useGSAP(() => {
+    // hide by default
+    gsap.set(paragraphRef.current, {
+      yPercent: 100 + (props.safePadding ?? 0),
+    });
+  }, []);
 
   return (
     <div className="overflow-hidden">

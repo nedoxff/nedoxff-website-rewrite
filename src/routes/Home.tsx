@@ -36,16 +36,7 @@ export default function Home() {
   const load = () =>
     new ProgressPromise<void>((resolve, reject, progress) => {
       const max = 75;
-      const preload = [
-        Dog,
-        Guy,
-        PawIcon,
-        HumanIcon,
-        DiscordIcon,
-        GithubIcon,
-        MailIcon,
-        TwitterIcon,
-      ];
+      const preload = [Dog, Guy];
       const perform = (idx: number) =>
         preloadImage(preload[idx])
           .then(() => {
