@@ -19,3 +19,11 @@ export const updateTheme = (newIsDark: boolean) => {
   else document.documentElement.classList.remove("dark");
   localStorage.setItem("theme", newIsDark ? "dark" : "light");
 };
+
+export type HistoryState = {
+  isInternalRedirect: boolean;
+};
+
+export const getIsRedirect = (): boolean =>
+  ((history.state as HistoryState) ?? { isInternalRedirect: false })
+    .isInternalRedirect;

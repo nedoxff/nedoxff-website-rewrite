@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --color-dark: 05 05 05;
+    --color-dark: 10 10 10;
   }
 
   .filter-white {

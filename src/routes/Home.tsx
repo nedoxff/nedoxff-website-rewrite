@@ -1,38 +1,66 @@
-import { ReactNode, RefObject, useState } from "react";
-import LoadingScreen from "../components/LoadingScreen";
+import { RefObject, createContext, useContext, useState } from "react";
 import { ProgressPromise } from "../helpers/ProgressPromise";
-import gsap from "gsap";
 import { animateClipTransition } from "../helpers/common/Transitions";
+import { useAnimatable } from "../helpers/common/CustomHooks";
+import toast, { Toaster } from "react-hot-toast";
 import AnimatableText from "../components/AnimatableComponents/AnimatableText";
-import { preloadImage } from "../helpers/Utilities";
+import gsap from "gsap";
+import LoadingScreen from "../components/LoadingScreen";
+import {
+  HistoryState,
+  getIsDark,
+  getIsRedirect,
+  preloadImage,
+} from "../helpers/Utilities";
+import ThemeSwitcher from "../components/Buttons/ThemeSwitcher";
+import IconButton from "../components/Buttons/IconButton";
+import Button from "../components/Buttons/Button";
 
 import Dog from "../assets/dog.png?format=avif&imagetools";
 import Guy from "../assets/guy.png?format=avif&imagetools";
-import ThemeSwitcher from "../components/Buttons/ThemeSwitcher";
-import IconSwitchButton from "../components/Buttons/IconSwitchButton";
 import PawIcon from "../assets/icons/paw.svg";
 import HumanIcon from "../assets/icons/human.svg";
-import Button from "../components/Buttons/Button";
-import { useAnimatable } from "../helpers/common/CustomHooks";
+import DiscordIcon from "../assets/socials/discord.svg";
+import GithubIcon from "../assets/socials/github.svg";
+import MailIcon from "../assets/socials/mail.svg";
+import TwitterIcon from "../assets/socials/twitter.svg";
+
+type RedirectCallback = (
+  url: string,
+  internalRedirect?: boolean,
+  color?: string,
+) => void;
+const ShowContext = createContext(false);
 
 export default function Home() {
   const load = () =>
     new ProgressPromise<void>((resolve, reject, progress) => {
       const max = 75;
-      const preload = [Dog, Guy, PawIcon, HumanIcon];
+      const preload = [
+        Dog,
+        Guy,
+        PawIcon,
+        HumanIcon,
+        DiscordIcon,
+        GithubIcon,
+        MailIcon,
+        TwitterIcon,
+      ];
       const perform = (idx: number) =>
-        preloadImage(preload[idx]).then(() => {
-          progress((max / preload.length) * (idx + 1));
-          idx++;
-          if (idx < preload.length - 1) perform(idx);
-          else {
-            if (document.readyState === "complete") resolve();
+        preloadImage(preload[idx])
+          .then(() => {
+            progress((max / preload.length) * (idx + 1));
+            idx++;
+            if (idx < preload.length - 1) perform(idx);
             else {
-              document.onreadystatechange = () =>
-                document.readyState === "complete" && resolve();
+              if (document.readyState === "complete") resolve();
+              else {
+                document.onreadystatechange = () =>
+                  document.readyState === "complete" && resolve();
+              }
             }
-          }
-        });
+          })
+          .catch((err) => reject(err));
       perform(0);
     });
 
@@ -42,7 +70,7 @@ export default function Home() {
   const backgroundRef = useAnimatable<HTMLDivElement, boolean>(
     showContent,
     (prev, curr, ref) => {
-      if (prev === false && curr === true) {
+      if (!prev && curr) {
         gsap.to(ref.current, {
           scaleY: 1,
           duration: 1,
@@ -53,42 +81,81 @@ export default function Home() {
     },
   );
 
+  const redirect = (
+    url: string,
+    internalRedirect?: boolean,
+    color?: string,
+  ) => {
+    setShowGrid(false);
+    if (color !== undefined) {
+      gsap.to(backgroundRef.current, {
+        backgroundColor: color,
+        duration: 1,
+        ease: "power3.inOut",
+      });
+    }
+    setTimeout(() => {
+      if (internalRedirect) {
+        history.pushState(
+          { isInternalRedirect: true } as HistoryState,
+          "",
+          url,
+        );
+      } else {
+        window.location.href = url;
+      }
+    }, 1250);
+  };
+
+  const darkColor = `rgb(${getComputedStyle(document.body).getPropertyValue("--color-dark")})`;
   return (
     <main>
+      <Toaster />
+
       <LoadingScreen
         callbackDelay={500}
-        backgroundColor="white"
-        elementColor="#050505"
+        backgroundColor={
+          getIsRedirect() ? (getIsDark() ? darkColor : "white") : "white"
+        }
+        elementColor={
+          getIsRedirect() ? (getIsDark() ? "white" : darkColor) : darkColor
+        }
         execute={load}
         onExecuted={() => setShowContent(true)}
       ></LoadingScreen>
 
       <div
-        className="bg-dark w-dvw h-dvh fixed top-0 left-0 origin-bottom scale-y-0"
+        className="dark:bg-dark bg-white w-dvw h-dvh fixed top-0 left-0 origin-bottom scale-y-0"
         ref={backgroundRef}
       ></div>
 
-      <HomeGrid show={showGrid} axis="y" duration={0.75} />
+      <ShowContext.Provider value={showGrid}>
+        <HomeGrid redirect={redirect} />
+      </ShowContext.Provider>
     </main>
   );
 }
 
-function HomeGrid(props: { show: boolean; axis: "x" | "y"; duration: number }) {
+function HomeGrid(props: { redirect: RedirectCallback }) {
   const commonAnimate = (
     prev: boolean | undefined,
     curr: boolean,
     ref: RefObject<HTMLDivElement>,
   ) => {
-    if (prev === false && curr === true) {
+    if (!prev && curr) {
+      animateClipTransition<HTMLDivElement>({ axis: "y", duration: 0.75 }, ref);
+    } else if (prev && !curr) {
       animateClipTransition<HTMLDivElement>(
-        { axis: props.axis, duration: props.duration },
+        { axis: "y", backwards: true, duration: 0.75 },
         ref,
       );
     }
   };
 
+  const show = useContext(ShowContext);
+
   const createCommonRef = () =>
-    useAnimatable<HTMLDivElement, boolean>(props.show, commonAnimate);
+    useAnimatable<HTMLDivElement, boolean>(show, commonAnimate);
 
   const introductionBorderRef = createCommonRef();
   const contactsBorderRef = createCommonRef();
@@ -116,30 +183,42 @@ function HomeGrid(props: { show: boolean; axis: "x" | "y"; duration: number }) {
         ></div>
       </div>
       <div className="grid absolute gap-2 p-10 w-dvw h-dvh grid-cols-2 grid-rows-4 z-10">
-        <IntroductionSection show={props.show} />
-        <ContactsSection show={props.show} />
-        <ArtSection show={props.show} />
-        <CodeSection show={props.show} />
+        <IntroductionSection />
+        <ContactsSection redirect={props.redirect} />
+        <ArtSection redirect={props.redirect} />
+        <CodeSection redirect={props.redirect} />
       </div>
     </main>
   );
 }
 
-function IntroductionSection(props: { show: boolean }) {
+function IntroductionSection() {
   const [isFurry, setIsFurry] = useState(false);
+  const show = useContext(ShowContext);
+
   const buttonContainerRef = useAnimatable<HTMLDivElement, boolean>(
-    props.show,
+    show,
     (prev, curr, ref) => {
-      if (prev === false && curr === true) {
+      if (!prev && curr) {
         animateClipTransition({ axis: "y", duration: 1, display: "flex" }, ref);
+      } else if (prev && !curr) {
+        animateClipTransition<HTMLDivElement>(
+          { axis: "y", display: "flex", backwards: true, duration: 1 },
+          ref,
+        );
       }
     },
   );
   const imageRef = useAnimatable<HTMLImageElement, boolean>(
-    props.show,
+    show,
     (prev, curr, ref) => {
-      if (prev === false && curr === true) {
+      if (!prev && curr) {
         animateClipTransition({ axis: "y", duration: 1 }, ref);
+      } else if (prev && !curr) {
+        animateClipTransition<HTMLDivElement>(
+          { axis: "y", backwards: true, duration: 1 },
+          ref,
+        );
       }
     },
   );
@@ -147,7 +226,7 @@ function IntroductionSection(props: { show: boolean }) {
   return (
     <div className="overflow-clip rounded-xl flex flex-col p-5 border-white row-start-1 row-end-4 col-span-1 relative">
       <AnimatableText
-        show={props.show}
+        show={show}
         duration={1}
         safePadding={5}
         className="font-title text-6xl text-white font-semibold"
@@ -155,7 +234,7 @@ function IntroductionSection(props: { show: boolean }) {
         nedoxff <span className="text-3xl font-medium">(he/him)</span>
       </AnimatableText>
       <AnimatableText
-        show={props.show}
+        show={show}
         duration={1}
         safePadding={5}
         className="font-body text-4xl text-white"
@@ -166,13 +245,13 @@ function IntroductionSection(props: { show: boolean }) {
       <div className="absolute bottom-0 left-0 p-5 flex flex-col gap-2">
         <div className="hidden flex-row gap-1" ref={buttonContainerRef}>
           <ThemeSwitcher />
-          <IconSwitchButton
+          <IconButton
             icon={isFurry ? HumanIcon : PawIcon}
-            onSwitched={() => setIsFurry(!isFurry)}
+            onClicked={() => setIsFurry(!isFurry)}
           />
         </div>
         <AnimatableText
-          show={props.show}
+          show={show}
           duration={1}
           safePadding={5}
           className="font-body text-xl text-white max-w-[60%]"
@@ -193,11 +272,45 @@ function IntroductionSection(props: { show: boolean }) {
   );
 }
 
-function ContactsSection(props: { show: boolean }) {
+function ContactsSection(props: { redirect: RedirectCallback }) {
+  const show = useContext(ShowContext);
+  const buttonsContainerRef = useAnimatable<HTMLDivElement, boolean>(
+    show,
+    (prev, curr, ref) => {
+      if (!prev && curr) {
+        animateClipTransition({ axis: "y", duration: 1, display: "flex" }, ref);
+      } else if (prev && !curr) {
+        animateClipTransition<HTMLDivElement>(
+          { axis: "y", display: "flex", backwards: true, duration: 1 },
+          ref,
+        );
+      }
+    },
+  );
+
+  const copyToClipboard = (value: string) => {
+    navigator.clipboard.writeText(value).then(
+      () => {
+        toast.success("Copied to clipboard!", {
+          id: "copied-to-clipboard",
+          className:
+            "font-body dark:bg-white dark:text-dark bg-dark text-white text-xl font-medium",
+        });
+      },
+      () => {
+        toast.error("Failed to copy to clipboard!", {
+          id: "copied-to-clipboard",
+          className:
+            "font-body dark:bg-white dark:text-dark bg-dark text-white text-xl font-medium",
+        });
+      },
+    );
+  };
+
   return (
     <div className="overflow-clip rounded-xl flex flex-col p-5 row-start-4 col-span-1">
       <AnimatableText
-        show={props.show}
+        show={show}
         duration={1}
         safePadding={5}
         className="font-title text-5xl text-white font-semibold"
@@ -205,23 +318,65 @@ function ContactsSection(props: { show: boolean }) {
         contacts
       </AnimatableText>
       <AnimatableText
-        show={props.show}
+        show={show}
         duration={1}
         safePadding={5}
         className="font-body text-4xl text-white"
       >
         you can find me on the following platforms:
       </AnimatableText>
+      <div
+        className="hidden flex-row gap-1 flex-grow items-center [&>*]:self-center"
+        ref={buttonsContainerRef}
+      >
+        <IconButton
+          className="copy-button"
+          icon={DiscordIcon}
+          onClicked={() => copyToClipboard("nedoxff")}
+        ></IconButton>
+        <IconButton
+          icon={GithubIcon}
+          onClicked={() =>
+            props.redirect(
+              "https://github.com/nedoxff",
+              false,
+              getIsDark() ? "#22272e" : "#ffffff",
+            )
+          }
+        ></IconButton>
+        <IconButton
+          className="copy-button"
+          icon={MailIcon}
+          onClicked={() => copyToClipboard("nedoxff@proton.me")}
+        ></IconButton>
+        <IconButton
+          icon={TwitterIcon}
+          onClicked={() =>
+            props.redirect(
+              "https://x.com/nedodraws",
+              false,
+              getIsDark() ? "#000000" : "#ffffff",
+            )
+          }
+        ></IconButton>
+      </div>
     </div>
   );
 }
 
-function ArtSection(props: { show: boolean }) {
+function ArtSection(props: { redirect: RedirectCallback }) {
+  const show = useContext(ShowContext);
+
   const redirectButtonRef = useAnimatable<HTMLDivElement, boolean>(
-    props.show,
+    show,
     (prev, curr, ref) => {
-      if (prev === false && curr === true) {
+      if (!prev && curr) {
         animateClipTransition({ axis: "y", duration: 1 }, ref);
+      } else if (prev && !curr) {
+        animateClipTransition<HTMLDivElement>(
+          { axis: "y", backwards: true, duration: 1 },
+          ref,
+        );
       }
     },
   );
@@ -229,7 +384,7 @@ function ArtSection(props: { show: boolean }) {
   return (
     <div className="rounded-xl flex flex-col p-5 border-white row-span-2 col-start-2 relative">
       <AnimatableText
-        show={props.show}
+        show={show}
         duration={1}
         safePadding={5}
         className="font-title text-5xl text-white font-semibold"
@@ -242,7 +397,7 @@ function ArtSection(props: { show: boolean }) {
       >
         <Button
           className="font-body text-2xl"
-          onClick={() => console.log("art")}
+          onClick={() => props.redirect("#art", true)}
         >
           view work
         </Button>
@@ -251,12 +406,19 @@ function ArtSection(props: { show: boolean }) {
   );
 }
 
-function CodeSection(props: { show: boolean }) {
+function CodeSection(props: { redirect: RedirectCallback }) {
+  const show = useContext(ShowContext);
+
   const redirectButtonRef = useAnimatable<HTMLDivElement, boolean>(
-    props.show,
+    show,
     (prev, curr, ref) => {
-      if (prev === false && curr === true) {
+      if (!prev && curr) {
         animateClipTransition({ axis: "y", duration: 1 }, ref);
+      } else if (prev && !curr) {
+        animateClipTransition<HTMLDivElement>(
+          { axis: "y", backwards: true, duration: 1 },
+          ref,
+        );
       }
     },
   );
@@ -264,7 +426,7 @@ function CodeSection(props: { show: boolean }) {
   return (
     <div className="rounded-xl row-span-2 col-start-2 flex flex-col p-5 relative">
       <AnimatableText
-        show={props.show}
+        show={show}
         duration={1}
         safePadding={5}
         className="font-title text-5xl text-white font-semibold"
@@ -277,7 +439,7 @@ function CodeSection(props: { show: boolean }) {
       >
         <Button
           className="font-body text-2xl"
-          onClick={() => console.log("code")}
+          onClick={() => props.redirect("#code", true)}
         >
           view work
         </Button>
