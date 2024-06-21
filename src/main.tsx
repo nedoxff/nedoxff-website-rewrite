@@ -5,11 +5,16 @@ import Home from "./routes/home/Home";
 import "./index.css";
 import { StoreContext } from "storeon/react";
 import { store } from "./helpers/state";
+import Art from "./routes/art/Art";
 
 const router = createHashRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/art",
+    element: <Art />,
   },
 ]);
 

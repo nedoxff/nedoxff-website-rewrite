@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ProgressPromise } from "../helpers/ProgressPromise";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useStoreon } from "storeon/react";
+import { AppEvents, AppState } from "../helpers/state";
+import { getIsRedirect } from "../helpers/utilities";
 
 export type LoadingScreenProps = {
-  backgroundColor: string;
-  elementColor: string;
   callbackDelay?: number;
+  text?: string;
   execute: () => ProgressPromise<unknown>;
   onExecuted: () => void;
 };
@@ -15,6 +17,9 @@ export default function LoadingScreen(props: LoadingScreenProps) {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const loadingBarRef = useRef<HTMLHeadingElement>(null);
+
+  const { theme } = useStoreon<AppState, AppEvents>("theme");
+  const darkColor = `rgb(${getComputedStyle(document.body).getPropertyValue("--color-dark")})`;
 
   useEffect(() => {
     props
@@ -35,14 +40,27 @@ export default function LoadingScreen(props: LoadingScreenProps) {
     });
   }, [loadingBarProgress]);
 
+  const backgroundColor = getIsRedirect()
+    ? theme === "dark"
+      ? darkColor
+      : "white"
+    : "white";
+  const elementColor = getIsRedirect()
+    ? theme === "dark"
+      ? "white"
+      : darkColor
+    : darkColor;
+
   return (
     <div
-      style={{ backgroundColor: props.backgroundColor }}
+      style={{
+        backgroundColor: backgroundColor,
+      }}
       className="fixed top-0 left-0 w-dvw h-dvh"
     >
       {errorMessage !== "" && (
         <h1
-          style={{ color: props.elementColor }}
+          style={{ color: elementColor }}
           className="font-title font-medium text-2xl p-5"
         >
           an error occurred while loading:
@@ -53,18 +71,21 @@ export default function LoadingScreen(props: LoadingScreenProps) {
       <h1
         ref={loadingBarRef}
         style={{
-          backgroundColor: props.elementColor,
+          backgroundColor: elementColor,
           transformOrigin: "center left",
         }}
         className="font-title scale-x-0 text-3xl xl:text-5xl fixed bottom-0 left-0 w-dvw text-transparent font-semibold"
       >
-        loading
+        {props.text ?? "loading"}
       </h1>
       <h1
-        style={{ color: props.backgroundColor }}
+        style={{
+          color: backgroundColor,
+          filter: elementColor === "white" ? "invert(1)" : "",
+        }}
         className="mix-blend-difference font-title text-3xl xl:text-5xl fixed bottom-0 left-0 font-semibold"
       >
-        loading
+        {props.text ?? "loading"}
       </h1>
     </div>
   );

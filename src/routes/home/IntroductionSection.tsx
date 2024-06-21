@@ -83,7 +83,18 @@ export default function IntroductionSection() {
           licensed under the ITF FFL.
           <br />
           the code for this website is open-source and can be found on github.
+          <br />
         </AnimatableSplitText>
+        <AnimatableText
+          show={show}
+          duration={1}
+          safePadding={5}
+          showDelay={0.4}
+          hideDelay={0.4}
+          className="font-body text-lg font-light text-dark dark:text-white"
+        >
+          version {__VERSION_NAME__} • {__LAST_COMMIT_HASH__}
+        </AnimatableText>
       </div>
 
       <img

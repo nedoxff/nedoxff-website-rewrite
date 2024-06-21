@@ -18,6 +18,7 @@ import IntroductionSection from "./IntroductionSection";
 import ContactsSection from "./ContactsSection";
 import ArtSection from "./ArtSection";
 import CodeSection from "./CodeSection";
+import { useNavigate } from "react-router-dom";
 
 export type RedirectCallback = (
   url: string,
@@ -73,6 +74,7 @@ export default function Home() {
     },
   );
 
+  const navigate = useNavigate();
   const redirect = (
     url: string,
     internalRedirect?: boolean,
@@ -93,13 +95,13 @@ export default function Home() {
           "",
           url,
         );
+        navigate(0);
       } else {
         window.location.href = url;
       }
     }, 1250);
   };
 
-  const darkColor = `rgb(${getComputedStyle(document.body).getPropertyValue("--color-dark")})`;
   return (
     <main>
       <ThemeContext.Provider value={theme}>
@@ -107,16 +109,6 @@ export default function Home() {
 
         <LoadingScreen
           callbackDelay={500}
-          backgroundColor={
-            getIsRedirect() ? (theme === "dark" ? darkColor : "white") : "white"
-          }
-          elementColor={
-            getIsRedirect()
-              ? theme === "dark"
-                ? "white"
-                : darkColor
-              : darkColor
-          }
           execute={load}
           onExecuted={() => setShowContent(true)}
         ></LoadingScreen>
