@@ -62,7 +62,7 @@ export default function LoadingScreen(props: LoadingScreenProps) {
       </h1>
       <h1
         style={{ color: props.backgroundColor }}
-        className="mix-blend-lighten font-title text-3xl xl:text-5xl fixed bottom-0 left-0 font-semibold"
+        className="mix-blend-difference font-title text-3xl xl:text-5xl fixed bottom-0 left-0 font-semibold"
       >
         loading
       </h1>

@@ -17,10 +17,6 @@ export default function SplitTextRenderer(props: SplitTextRenderer) {
     setSplit(SplitType.create(helperRef.current!, props.options));
   }, []);
 
-  useEffect(() => {
-    console.log(split);
-  }, [split]);
-
   return split === undefined ? (
     <p
       ref={helperRef}

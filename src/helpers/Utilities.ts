@@ -5,19 +5,20 @@ export const preloadImage = (src: string) =>
     image.src = src;
   });
 
-export const getIsDark = (): boolean => {
+// this should only be used for initialization and inital page load!
+export const getTheme = (): string => {
   if (localStorage.getItem("theme") !== null)
-    return localStorage.getItem("theme") === "dark";
-  return (
-    window.matchMedia &&
+    return localStorage.getItem("theme")!;
+  return window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
+    ? "dark"
+    : "light";
 };
 
-export const updateTheme = (newIsDark: boolean) => {
-  if (newIsDark) document.documentElement.classList.add("dark");
+export const updateTheme = (theme: string) => {
+  if (theme === "dark") document.documentElement.classList.add("dark");
   else document.documentElement.classList.remove("dark");
-  localStorage.setItem("theme", newIsDark ? "dark" : "light");
+  localStorage.setItem("theme", theme);
 };
 
 export type HistoryState = {

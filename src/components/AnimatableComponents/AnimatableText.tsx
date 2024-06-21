@@ -26,6 +26,7 @@ export function AnimatableSplitText(
       options={{ split: "lines" }}
       render={(el, idx) => (
         <AnimatableText
+          key={idx}
           showDelay={(props.stagger ?? 0) * idx}
           hideDelay={(props.stagger ?? 0) * idx}
           {...props}
