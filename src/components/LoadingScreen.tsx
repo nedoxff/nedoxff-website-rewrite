@@ -16,6 +16,7 @@ export type LoadingScreenProps = {
 export default function LoadingScreen(props: LoadingScreenProps) {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
+  const [hidden, setHidden] = useState(false);
   const loadingBarRef = useRef<HTMLHeadingElement>(null);
 
   const { theme } = useStoreon<AppState, AppEvents>("theme");
@@ -35,7 +36,10 @@ export default function LoadingScreen(props: LoadingScreenProps) {
       ease: "power3.inOut",
       onComplete: () => {
         if (loadingBarProgress === 100)
-          setTimeout(() => props.onExecuted(), props.callbackDelay ?? 0);
+          setTimeout(() => {
+            props.onExecuted();
+            setTimeout(() => setHidden(true), 1000);
+          }, props.callbackDelay ?? 0);
       },
     });
   }, [loadingBarProgress]);
@@ -55,6 +59,7 @@ export default function LoadingScreen(props: LoadingScreenProps) {
     <div
       style={{
         backgroundColor: backgroundColor,
+        display: hidden ? "none" : "block",
       }}
       className="fixed top-0 left-0 w-dvw h-dvh"
     >

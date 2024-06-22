@@ -89,6 +89,7 @@ export default function Home() {
         ease: "power3.inOut",
       });
     }
+
     setTimeout(() => {
       if (internalRedirect) {
         history.pushState(
@@ -157,7 +158,7 @@ function HomeGrid(props: { redirect: RedirectCallback }) {
 
   return (
     <main>
-      <div className="grid absolute gap-2 p-3 xl:p-10 w-dvw h-[200dvh] xl:h-dvh grid-cols-1 grid-rows-9 xl:grid-cols-2 xl:grid-rows-4">
+      <div className="grid absolute gap-2 p-3 xl:p-10 w-dvw h-[220dvh] xl:h-dvh grid-cols-1 grid-rows-9 xl:grid-cols-2 xl:grid-rows-4">
         <div
           className="border-2 rounded-xl hidden border-dark dark:border-white row-start-1 row-end-4 col-span-1"
           ref={introductionBorderRef}
@@ -176,7 +177,7 @@ function HomeGrid(props: { redirect: RedirectCallback }) {
         ></div>
       </div>
 
-      <div className="grid absolute gap-2 p-3 xl:p-10 w-dvw h-[200dvh] xl:h-dvh grid-cols-1 grid-rows-9 xl:grid-cols-2 xl:grid-rows-4">
+      <div className="grid absolute gap-2 p-3 xl:p-10 w-dvw h-[220dvh] xl:h-dvh grid-cols-1 grid-rows-9 xl:grid-cols-2 xl:grid-rows-4">
         <IntroductionSection />
         <ContactsSection redirect={props.redirect} />
         <ArtSection redirect={props.redirect} />
