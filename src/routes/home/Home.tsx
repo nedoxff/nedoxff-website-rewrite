@@ -19,6 +19,7 @@ import ContactsSection from "./ContactsSection";
 import ArtSection from "./ArtSection";
 import CodeSection from "./CodeSection";
 import { useNavigate } from "react-router-dom";
+import MobileInformationSection from "./MobileInformationSection";
 
 export type RedirectCallback = (
   url: string,
@@ -156,7 +157,7 @@ function HomeGrid(props: { redirect: RedirectCallback }) {
 
   return (
     <main>
-      <div className="grid absolute gap-2 p-10 w-dvw h-dvh grid-cols-2 grid-rows-4">
+      <div className="grid absolute gap-2 p-3 xl:p-10 w-dvw h-[200dvh] xl:h-dvh grid-cols-1 grid-rows-9 xl:grid-cols-2 xl:grid-rows-4">
         <div
           className="border-2 rounded-xl hidden border-dark dark:border-white row-start-1 row-end-4 col-span-1"
           ref={introductionBorderRef}
@@ -166,19 +167,21 @@ function HomeGrid(props: { redirect: RedirectCallback }) {
           ref={contactsBorderRef}
         ></div>
         <div
-          className="border-2 rounded-xl border-dark dark:border-white row-span-2 col-start-2 hidden"
+          className="border-2 rounded-xl border-dark dark:border-white row-span-2 xl:col-start-2 hidden"
           ref={artBorderRef}
         ></div>
         <div
-          className="border-2 rounded-xl border-dark dark:border-white row-span-2 col-start-2 hidden"
+          className="border-2 rounded-xl border-dark dark:border-white row-span-2 xl:col-start-2 hidden"
           ref={codeBorderRef}
         ></div>
       </div>
-      <div className="grid absolute gap-2 p-10 w-dvw h-dvh grid-cols-2 grid-rows-4 z-10">
+
+      <div className="grid absolute gap-2 p-3 xl:p-10 w-dvw h-[200dvh] xl:h-dvh grid-cols-1 grid-rows-9 xl:grid-cols-2 xl:grid-rows-4">
         <IntroductionSection />
         <ContactsSection redirect={props.redirect} />
         <ArtSection redirect={props.redirect} />
         <CodeSection redirect={props.redirect} />
+        <MobileInformationSection />
       </div>
     </main>
   );

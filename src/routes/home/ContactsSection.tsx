@@ -52,7 +52,7 @@ export default function ContactsSection(props: { redirect: RedirectCallback }) {
         show={show}
         duration={1}
         safePadding={5}
-        className="font-title text-5xl text-dark dark:text-white font-semibold"
+        className="font-title text-4xl xl:text-5xl text-dark dark:text-white font-semibold"
       >
         contacts
       </AnimatableText>
@@ -62,9 +62,9 @@ export default function ContactsSection(props: { redirect: RedirectCallback }) {
         hideDelay={0.1}
         duration={1}
         safePadding={5}
-        className="font-body text-4xl text-dark dark:text-white"
+        className="font-body text-3xl xl:text-4xl text-dark dark:text-white"
       >
-        you can find me on the following platforms:
+        you can find me here:
       </AnimatableText>
       <div
         className="hidden flex-row gap-1 flex-grow items-center [&>*]:self-center"

@@ -46,9 +46,9 @@ export default function CodeSection(props: { redirect: RedirectCallback }) {
   );
 
   return (
-    <div className="rounded-xl overflow-clip row-span-2 col-start-2 flex flex-col p-5 relative">
+    <div className="rounded-xl overflow-clip row-span-2 xl:col-start-2 flex flex-col p-5 relative">
       <img
-        src={assets?.get(`code_${theme}`)}
+        src={assets?.get(`code-${theme}`)}
         ref={backgroundImageRef}
         className="hidden absolute top-0 left-0 w-full h-full object-cover object-left-top opacity-25"
       ></img>
@@ -57,7 +57,7 @@ export default function CodeSection(props: { redirect: RedirectCallback }) {
         show={show}
         duration={1}
         safePadding={5}
-        className="font-title text-5xl text-dark dark:text-white font-semibold"
+        className="font-title text-4xl xl:text-5xl text-dark dark:text-white font-semibold"
       >
         code
       </AnimatableText>
@@ -66,7 +66,7 @@ export default function CodeSection(props: { redirect: RedirectCallback }) {
         duration={1}
         safePadding={5}
         stagger={0.1}
-        className="font-body text-4xl text-dark dark:text-white"
+        className="font-body text-3xl xl:text-4xl text-dark dark:text-white"
       >
         writing code is my main expertise. i have both professional and personal
         projects, most of which are open-source.

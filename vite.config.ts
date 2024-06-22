@@ -10,6 +10,6 @@ export default defineConfig({
   plugins: [react(), imagetools()],
   define: {
     __LAST_COMMIT_HASH__: JSON.stringify(commitHash),
-    __VERSION_NAME__: JSON.stringify("homepage-dev"),
+    __VERSION_NAME__: JSON.stringify("homepage-mobile"),
   },
 });

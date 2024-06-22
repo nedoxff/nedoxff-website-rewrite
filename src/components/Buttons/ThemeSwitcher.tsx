@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 
-import DarkThemeIcon from "../../assets/icons/dark_mode.svg";
-import LightThemeIcon from "../../assets/icons/light_mode.svg";
-import { updateTheme } from "../../helpers/utilities";
+import DarkThemeIcon from "../../assets/icons/dark-mode.svg";
+import LightThemeIcon from "../../assets/icons/light-mode.svg";
 import { useStoreon } from "storeon/react";
 import { AppEvents, AppState } from "../../helpers/state";
 

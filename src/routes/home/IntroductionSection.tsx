@@ -49,9 +49,10 @@ export default function IntroductionSection() {
         show={show}
         duration={1}
         safePadding={5}
-        className="font-title text-6xl text-dark dark:text-white font-semibold"
+        className="font-title text-5xl xl:text-6xl text-dark dark:text-white font-semibold"
       >
-        nedoxff <span className="text-3xl font-medium">(he/him)</span>
+        nedoxff{" "}
+        <span className="text-2xl xl:text-3xl font-medium">(he/him)</span>
       </AnimatableText>
       <AnimatableText
         show={show}
@@ -59,47 +60,52 @@ export default function IntroductionSection() {
         hideDelay={0.1}
         duration={1}
         safePadding={5}
-        className="font-body text-4xl text-dark dark:text-white"
+        className="font-body text-3xl xl:text-4xl text-dark dark:text-white"
       >
         is a <span className="font-semibold">{isFurry ? "dog" : "guy"}</span>{" "}
         that likes creating things on the internet.
       </AnimatableText>
-      <div className="absolute max-w-[60%] bottom-0 left-0 p-5 flex flex-col gap-2">
-        <div className="hidden flex-row gap-1" ref={buttonContainerRef}>
+      <div className="xl:absolute xl:max-w-[60%] xl:bottom-0 xl:left-0 xl:p-5 flex flex-col gap-2 relative">
+        <div
+          className="hidden flex-row gap-1 -ml-1 mt-1 xl:ml-0 xl:mt-0"
+          ref={buttonContainerRef}
+        >
           <ThemeSwitcher />
           <IconButton
             icon={isFurry ? HumanIcon : PawIcon}
             onClicked={() => setIsFurry(!isFurry)}
           />
         </div>
-        <AnimatableSplitText
-          show={show}
-          duration={1}
-          safePadding={5}
-          stagger={0.1}
-          className="font-body text-xl text-dark dark:text-white"
-        >
-          this website uses Clash Grotesk and Clash Display fonts, which are
-          licensed under the ITF FFL.
-          <br />
-          the code for this website is open-source and can be found on github.
-          <br />
-        </AnimatableSplitText>
-        <AnimatableText
-          show={show}
-          duration={1}
-          safePadding={5}
-          showDelay={0.4}
-          hideDelay={0.4}
-          className="font-body text-lg font-light text-dark dark:text-white"
-        >
-          version {__VERSION_NAME__} • {__LAST_COMMIT_HASH__}
-        </AnimatableText>
+        <div className="xl:block hidden">
+          <AnimatableSplitText
+            show={show}
+            duration={1}
+            safePadding={5}
+            stagger={0.1}
+            className="font-body text-xl text-dark dark:text-white"
+          >
+            this website uses Clash Grotesk and Clash Display fonts, which are
+            licensed under the ITF FFL.
+            <br />
+            the code for this website is open-source and can be found on github.
+            <br />
+          </AnimatableSplitText>
+          <AnimatableText
+            show={show}
+            duration={1}
+            safePadding={5}
+            showDelay={0.4}
+            hideDelay={0.4}
+            className="font-body text-lg font-light text-dark dark:text-white"
+          >
+            version {__VERSION_NAME__} • {__LAST_COMMIT_HASH__}
+          </AnimatableText>
+        </div>
       </div>
 
       <img
         ref={imageRef}
-        className="hidden absolute bottom-0 right-0 dark:filter-white w-[40%]"
+        className="hidden absolute bottom-0 right-0 dark:filter-white h-[70%]"
         src={isFurry ? assets?.get("dog") : assets?.get("guy")}
       ></img>
     </div>
