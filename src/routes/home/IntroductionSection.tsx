@@ -10,6 +10,7 @@ import { animateClipTransition } from "../../helpers/common/Transitions";
 import { AssetContext, ShowContext } from "./Home";
 import PawIcon from "../../assets/icons/paw.svg";
 import HumanIcon from "../../assets/icons/human.svg";
+import { LICENSING_INFORMATION, VERSION_INFORMATION } from "./InformationText";
 
 export default function IntroductionSection() {
   const [isFurry, setIsFurry] = useState(false);
@@ -84,11 +85,7 @@ export default function IntroductionSection() {
             stagger={0.1}
             className="font-body text-xl text-dark dark:text-white"
           >
-            this website uses Clash Grotesk and Clash Display fonts, which are
-            licensed under the ITF FFL.
-            <br />
-            the code for this website is open-source and can be found on github.
-            <br />
+            {LICENSING_INFORMATION}
           </AnimatableSplitText>
           <AnimatableText
             show={show}
@@ -98,14 +95,14 @@ export default function IntroductionSection() {
             hideDelay={0.4}
             className="font-body text-lg font-light text-dark dark:text-white"
           >
-            version {__VERSION_NAME__} • {__LAST_COMMIT_HASH__}
+            {VERSION_INFORMATION}
           </AnimatableText>
         </div>
       </div>
 
       <img
         ref={imageRef}
-        className="hidden absolute bottom-0 right-0 dark:filter-white h-[70%]"
+        className="hidden absolute bottom-0 right-0 origin-bottom-right dark:filter-white xl:scale-[40%] scale-[75%]"
         src={isFurry ? assets?.get("dog") : assets?.get("guy")}
       ></img>
     </div>

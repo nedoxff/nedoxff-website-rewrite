@@ -19,7 +19,7 @@ import ContactsSection from "./ContactsSection";
 import ArtSection from "./ArtSection";
 import CodeSection from "./CodeSection";
 import { useNavigate } from "react-router-dom";
-import MobileInformationSection from "./MobileInformationSection";
+import { LICENSING_INFORMATION, VERSION_INFORMATION } from "./InformationText";
 
 export type RedirectCallback = (
   url: string,
@@ -158,7 +158,7 @@ function HomeGrid(props: { redirect: RedirectCallback }) {
 
   return (
     <main>
-      <div className="grid absolute gap-2 p-3 xl:p-10 w-dvw h-[220dvh] xl:h-dvh grid-cols-1 grid-rows-9 xl:grid-cols-2 xl:grid-rows-4">
+      <div className="grid absolute gap-2 p-3 xl:p-10 w-dvw h-[220dvh] xl:h-dvh grid-cols-1 grid-rows-8 xl:grid-cols-2 xl:grid-rows-4">
         <div
           className="border-2 rounded-xl hidden border-dark dark:border-white row-start-1 row-end-4 col-span-1"
           ref={introductionBorderRef}
@@ -177,12 +177,21 @@ function HomeGrid(props: { redirect: RedirectCallback }) {
         ></div>
       </div>
 
-      <div className="grid absolute gap-2 p-3 xl:p-10 w-dvw h-[220dvh] xl:h-dvh grid-cols-1 grid-rows-9 xl:grid-cols-2 xl:grid-rows-4">
-        <IntroductionSection />
-        <ContactsSection redirect={props.redirect} />
-        <ArtSection redirect={props.redirect} />
-        <CodeSection redirect={props.redirect} />
-        <MobileInformationSection />
+      <div className="absolute flex flex-col xl:h-dvh w-dvw">
+        <div className="grid gap-2 p-3 xl:p-10 grid-cols-1 grid-rows-8 xl:grid-cols-2 xl:grid-rows-4 h-[220dvh] xl:h-full">
+          <IntroductionSection />
+          <ContactsSection redirect={props.redirect} />
+          <ArtSection redirect={props.redirect} />
+          <CodeSection redirect={props.redirect} />
+        </div>
+        <div className="xl:hidden flex flex-col px-5 py-1">
+          <p className="font-body text-xl text-dark dark:text-white">
+            {LICENSING_INFORMATION}
+          </p>
+          <p className="font-body text-lg font-light text-dark dark:text-white">
+            {VERSION_INFORMATION}
+          </p>
+        </div>
       </div>
     </main>
   );
